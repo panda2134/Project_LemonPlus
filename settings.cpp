@@ -63,6 +63,16 @@ int Settings::getRejudgeTimes() const
     return rejudgeTimes;
 }
 
+int Settings::getNetworkInterfaceIndex() const
+{
+    return networkInterfaceIndex;
+}
+
+int Settings::getLookupInterval() const
+{
+    return lookupInterval;
+}
+
 const QString& Settings::getDefaultInputFileExtension() const
 {
     return defaultInputFileExtension;
@@ -138,6 +148,16 @@ void Settings::setRejudgeTimes(int number)
     rejudgeTimes = number;
 }
 
+void Settings::setNetworkInterfaceIndex(int index)
+{
+    networkInterfaceIndex = index;
+}
+
+void Settings::setLookupInterval(int value)
+{
+    lookupInterval = value;
+}
+
 void Settings::setDefaultInputFileExtension(const QString &extension)
 {
     defaultInputFileExtension = extension;
@@ -211,6 +231,8 @@ void Settings::copyFrom(Settings *other)
     setRejudgeTimes(other->getRejudgeTimes());
     setDefaultInputFileExtension(other->getDefaultInputFileExtension());
     setDefaultOutputFileExtension(other->getDefaultOutputFileExtension());
+    setNetworkInterfaceIndex(other->getNetworkInterfaceIndex());
+    setLookupInterval(other->getLookupInterval());
     setInputFileExtensions(other->getInputFileExtensions().join(";"));
     setOutputFileExtensions(other->getOutputFileExtensions().join(";"));
     
@@ -244,6 +266,11 @@ void Settings::saveSettings()
     settings.setValue("DefaultOutputFileExtension", defaultOutputFileExtension);
     settings.setValue("InputFileExtensions", inputFileExtensions);
     settings.setValue("OutputFileExtensions", outputFileExtensions);
+    settings.endGroup();
+
+    settings.beginGroup("Network");
+    settings.setValue("networkInterfaceIndex", networkInterfaceIndex);
+    settings.setValue("lookupInterval", lookupInterval);
     settings.endGroup();
     
     settings.beginWriteArray("v1.2/CompilerSettings");
@@ -305,7 +332,12 @@ void Settings::loadSettings()
     inputFileExtensions = settings.value("InputFileExtensions", QStringList() << "in").toStringList();
     outputFileExtensions = settings.value("OutputFileExtensions", QStringList() << "out" << "ans").toStringList();
     settings.endGroup();
-    
+
+    settings.beginGroup("Network");
+    networkInterfaceIndex = settings.value("networkInterfaceIndex", 0).toInt();
+    lookupInterval = settings.value("lookupInterval", 3000).toInt();
+    settings.endGroup();
+
     int compilerCount = settings.beginReadArray("v1.2/CompilerSettings");
     for (int i = 0; i < compilerCount; i ++) {
         settings.setArrayIndex(i);
@@ -399,3 +431,4 @@ QString Settings::selfTestPath()
 {
     return QString("selftest") + QDir::separator();
 }
+

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
-    <height>437</height>
+    <width>291</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>362</width>
-    <height>437</height>
+    <width>291</width>
+    <height>377</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -23,10 +23,10 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="styleSheet">
-      <string notr="true">font-size: 11pt;</string>
+      <string notr="true">font-size: 9pt;</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="GeneralSettings" name="generalSettings">
       <attribute name="title">
@@ -38,12 +38,17 @@
        <string>Compiler</string>
       </attribute>
      </widget>
+     <widget class="NetworkSettings" name="networkSettings">
+      <attribute name="title">
+       <string>Network</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="styleSheet">
-      <string notr="true">font-size:10pt;</string>
+      <string notr="true">font-size:9pt;</string>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
@@ -63,6 +68,12 @@
    <class>CompilerSettings</class>
    <extends>QWidget</extends>
    <header>compilersettings.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NetworkSettings</class>
+   <extends>QWidget</extends>
+   <header>networksettings.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

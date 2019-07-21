@@ -1,0 +1,20 @@
+#include "lanbroadcastserver.h"
+#include <QDebug>
+
+LANBroadcastServer::LANBroadcastServer(QObject *parent) : QObject(parent)
+{
+}
+
+void LANBroadcastServer::startBroadcastTimer()
+{
+    qDebug("STARTING");
+    timer = new QTimer();
+    timer->setInterval(3000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(doBroadcast()));
+    timer->start();
+}
+
+void LANBroadcastServer::doBroadcast()
+{
+    qDebug("BROADCASTING");
+}

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/judge">
+        <file>realjudge_win32.exe</file>
+    </qresource>
+</RCC>

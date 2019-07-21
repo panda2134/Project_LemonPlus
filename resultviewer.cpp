@@ -21,6 +21,7 @@
  **/
 
 #include "resultviewer.h"
+#include "contestserver.h"
 #include "judgingdialog.h"
 #include "contestant.h"
 #include "settings.h"
@@ -119,13 +120,13 @@ void ResultViewer::refreshViewer()
     if (! curContest) return;
     
     QStringList headerList;
-    headerList << tr("Name") << tr("Rank");
+    headerList << QString() << tr("Name") << tr("Rank");
     QList<Task*> taskList = curContest->getTaskList();
     for (int i = 0; i < taskList.size(); i ++) {
         headerList << taskList[i]->getProblemTile();
     }
     headerList << tr("Total Score") << tr("Total Used Time (s)") << tr("Judging Time");
-    setColumnCount(taskList.size() + 5);
+    setColumnCount(taskList.size() + 6);
     setHorizontalHeaderLabels(headerList);
     horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     
@@ -133,32 +134,37 @@ void ResultViewer::refreshViewer()
     QList< QPair<int, QString> > sortList;
     setRowCount(contestantList.size());
     for (int i = 0; i < contestantList.size(); i ++) {
-        setItem(i, 0, new QTableWidgetItem(contestantList[i]->getContestantName()));
-        setItem(i, 1, new QTableWidgetItem());
+        const QStyle *style = QApplication::style();
+        QIcon ico;
+        if (curContest->server->isContestantOnline(contestantList[i]->getContestantName()))
+            ico = style->standardIcon(QStyle::SP_ComputerIcon);
+        setItem(i, 0, new QTableWidgetItem(ico, QString()));
+        setItem(i, 1, new QTableWidgetItem(contestantList[i]->getContestantName()));
+        setItem(i, 2, new QTableWidgetItem());
         for (int j = 0; j < taskList.size(); j ++) {
-            setItem(i, j + 2, new QTableWidgetItem());
+            setItem(i, j + 3, new QTableWidgetItem());
             int score = contestantList[i]->getTaskScore(j);
             if (score != -1) {
-                item(i, j + 2)->setData(Qt::DisplayRole, score);
+                item(i, j + 3)->setData(Qt::DisplayRole, score);
             } else {
-                item(i, j + 2)->setText(tr("Invalid"));
+                item(i, j + 3)->setText(tr("Invalid"));
             }
         }
-        setItem(i, taskList.size() + 2, new QTableWidgetItem());
         setItem(i, taskList.size() + 3, new QTableWidgetItem());
         setItem(i, taskList.size() + 4, new QTableWidgetItem());
+        setItem(i, taskList.size() + 5, new QTableWidgetItem());
         int totalScore = contestantList[i]->getTotalScore();
         int totalUsedTime = contestantList[i]->getTotalUsedTime();
         QDateTime judgingTime = contestantList[i]->getJudingTime();
         if (totalScore != -1) {
-            item(i, taskList.size() + 2)->setData(Qt::DisplayRole, totalScore);
-            item(i, taskList.size() + 3)->setData(Qt::DisplayRole, double(totalUsedTime) / 1000);
-            item(i, taskList.size() + 4)->setData(Qt::DisplayRole, judgingTime);
+            item(i, taskList.size() + 3)->setData(Qt::DisplayRole, totalScore);
+            item(i, taskList.size() + 4)->setData(Qt::DisplayRole, double(totalUsedTime) / 1000);
+            item(i, taskList.size() + 5)->setData(Qt::DisplayRole, judgingTime);
             sortList.append(qMakePair(-totalScore, contestantList[i]->getContestantName()));
         } else {
-            item(i, taskList.size() + 2)->setText(tr("Invalid"));
             item(i, taskList.size() + 3)->setText(tr("Invalid"));
             item(i, taskList.size() + 4)->setText(tr("Invalid"));
+            item(i, taskList.size() + 5)->setText(tr("Invalid"));
         }
     }
     
@@ -173,9 +179,9 @@ void ResultViewer::refreshViewer()
     }
     for (int i = 0; i < rowCount(); i ++) {
         if (rankList.contains(contestantList[i]->getContestantName())) {
-            item(i, 1)->setData(Qt::DisplayRole, rankList[contestantList[i]->getContestantName()] + 1);
+            item(i, 2)->setData(Qt::DisplayRole, rankList[contestantList[i]->getContestantName()] + 1);
         } else {
-            item(i, 1)->setText(tr("Invalid"));
+            item(i, 2)->setText(tr("Invalid"));
         }
     }
     
@@ -192,7 +198,7 @@ void ResultViewer::judgeSelected()
     QList<QTableWidgetSelectionRange> selectionRange = selectedRanges();
     for (int i = 0; i < selectionRange.size(); i ++) {
         for (int j = selectionRange[i].topRow(); j <= selectionRange[i].bottomRow(); j ++) {
-            nameList.append(item(j, 0)->text());
+            nameList.append(item(j, 1)->text());
         }
     }
     JudgingDialog *dialog = new JudgingDialog(this);
@@ -245,7 +251,9 @@ void ResultViewer::deleteContestant()
 {
     QMessageBox *messageBox = new QMessageBox(QMessageBox::Warning, tr("Lemon"),
                                               QString("<span style=\"font-size:large\">")
-                                              + tr("Are you sure to delete selected contestant(s)?") + "</span>",
+                                              + tr("Are you sure to delete selected contestant(s)?") + "</span>"
+                                              + QString("<p>")
+                                              + tr("Online contestants will not be deleted.") + "</p>",
                                               QMessageBox::Ok | QMessageBox::Cancel, this);
     //QHBoxLayout *layout = new QHBoxLayout;
     QCheckBox *checkBox = new QCheckBox(tr("Delete directories in the hard disk as well"));
@@ -259,10 +267,12 @@ void ResultViewer::deleteContestant()
     QList<QTableWidgetSelectionRange> selectionRange = selectedRanges();
     for (int i = 0; i < selectionRange.size(); i ++) {
         for (int j = selectionRange[i].topRow(); j <= selectionRange[i].bottomRow(); j ++) {
-            curContest->deleteContestant(item(j, 0)->text());
+            if(curContest->server->isContestantOnline(item(j, 1)->text()))
+                continue;
+            curContest->deleteContestant(item(j, 1)->text());
             if (checkBox->isChecked()) {
-                clearPath(Settings::sourcePath() + item(j, 0)->text() + QDir::separator());
-                QDir(Settings::sourcePath()).rmdir(item(j, 0)->text());
+                clearPath(Settings::sourcePath() + item(j, 1)->text() + QDir::separator());
+                QDir(Settings::sourcePath()).rmdir(item(j, 1)->text());
             }
         }
     }
@@ -279,7 +289,7 @@ void ResultViewer::detailInformation()
     int index = selectionRange[0].topRow();
     DetailDialog *dialog = new DetailDialog(this);
     dialog->setModal(true);
-    dialog->refreshViewer(curContest, curContest->getContestant(item(index, 0)->text()));
+    dialog->refreshViewer(curContest, curContest->getContestant(item(index, 1)->text()));
     connect(dialog, SIGNAL(rejudgeSignal()), this, SLOT(refreshViewer()));
     dialog->showDialog();
     delete dialog;

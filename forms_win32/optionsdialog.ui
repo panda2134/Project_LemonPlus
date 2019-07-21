@@ -26,7 +26,7 @@
       <string notr="true">font-size: 9pt;</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="GeneralSettings" name="generalSettings">
       <attribute name="title">
@@ -36,6 +36,11 @@
      <widget class="CompilerSettings" name="compilerSettings">
       <attribute name="title">
        <string>Compiler</string>
+      </attribute>
+     </widget>
+     <widget class="NetworkSettings" name="networkSettings">
+      <attribute name="title">
+       <string>Network</string>
       </attribute>
      </widget>
     </widget>
@@ -63,6 +68,12 @@
    <class>CompilerSettings</class>
    <extends>QWidget</extends>
    <header>compilersettings.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NetworkSettings</class>
+   <extends>QWidget</extends>
+   <header>networksettings.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

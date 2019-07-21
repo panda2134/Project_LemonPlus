@@ -31,7 +31,7 @@
        <bool>true</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">font-size: 11pt;</string>
+       <string notr="true">font-size: 9pt;</string>
       </property>
       <property name="currentIndex">
        <number>1</number>
@@ -56,7 +56,7 @@
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">font-size: 11pt;</string>
+           <string notr="true">font-size: 9pt;</string>
           </property>
           <property name="title">
            <string>Summary</string>
@@ -68,7 +68,7 @@
               <enum>Qt::DefaultContextMenu</enum>
              </property>
              <property name="styleSheet">
-              <string notr="true">font-size: 11pt;</string>
+              <string notr="true">font-size: 10pt;</string>
              </property>
              <attribute name="headerVisible">
               <bool>false</bool>
@@ -92,7 +92,7 @@
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">font-size:11pt;</string>
+           <string notr="true">font-size: 9pt;</string>
           </property>
           <property name="title">
            <string>Detail</string>
@@ -124,7 +124,7 @@
         <item>
          <widget class="ResultViewer" name="resultViewer">
           <property name="styleSheet">
-           <string notr="true">font-size:10pt;</string>
+           <string notr="true">font-size:9pt;</string>
           </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -190,6 +190,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="collectButton">
+            <property name="text">
+             <string>Collect</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="judgeSingleTaskButton">
             <property name="text">
              <string>Judge Single Task</string>
@@ -230,11 +237,11 @@
      <x>0</x>
      <y>0</y>
      <width>725</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font-size:11pt;</string>
+    <string notr="true">font-size:9pt;</string>
    </property>
    <widget class="QMenu" name="fileMenu">
     <property name="title">
@@ -243,8 +250,8 @@
     <addaction name="newAction"/>
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
-    <addaction name="closeAction"/>
     <addaction name="openFolderAction"/>
+    <addaction name="closeAction"/>
     <addaction name="separator"/>
     <addaction name="exitAction"/>
    </widget>
@@ -358,9 +365,9 @@
     <string>&amp;Export Result</string>
    </property>
   </action>
-  <action name="judgeSingleTaskAction">
+  <action name="saveAction">
    <property name="text">
-    <string>Judge Single Task</string>
+    <string>Save Current Contest</string>
    </property>
   </action>
   <action name="openFolderAction">
@@ -368,9 +375,9 @@
     <string>Open Current Contest Folder</string>
    </property>
   </action>
-  <action name="saveAction">
+  <action name="judgeSingleTaskAction">
    <property name="text">
-    <string>Save Current Contest</string>
+    <string>Judge Single Task</string>
    </property>
   </action>
  </widget>

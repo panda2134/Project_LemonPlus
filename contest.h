@@ -25,18 +25,22 @@
 
 #include <QtCore>
 #include <QObject>
+#include <QThread>
 #include "globaltype.h"
 #define MagicNumber 0x20111127
 
 class Task;
 class Settings;
 class Contestant;
+class ContestServer;
 
 class Contest : public QObject
 {
     Q_OBJECT
 public:
     explicit Contest(QObject *parent = 0);
+    ContestServer *server;
+    QThread *serverThread;
     void setSettings(Settings*);
     void setContestTitle(const QString&);
     const QString& getContestTitle() const;
@@ -83,6 +87,7 @@ signals:
     void contestantJudgingFinished();
     void compileError(int, int);
     void stopJudgingSignal();
+    void stopServerSignal();
 };
 
 #endif // CONTEST_H

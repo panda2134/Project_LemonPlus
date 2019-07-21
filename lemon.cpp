@@ -36,7 +36,11 @@
 #include "addtaskdialog.h"
 #include "detaildialog.h"
 #include "exportutil.h"
+#include "lanbroadcast.h"
+#include "contestserver.h"
+#include "collectdialog.h"
 #include <QMessageBox>
+#include <QDebug>
 
 Lemon::Lemon(QWidget *parent) :
     QMainWindow(parent),
@@ -54,7 +58,15 @@ Lemon::Lemon(QWidget *parent) :
     
     dataDirWatcher = 0;
     settings->loadSettings();
-    
+
+    this->broadcast = new LanBroadcast();
+    broadcast->setInterfaceId(settings->getNetworkInterfaceIndex());
+    broadcastThread = new QThread();
+    broadcast->moveToThread(broadcastThread);
+    connect(broadcastThread, SIGNAL(started()), broadcast, SLOT(startBroadcastTimer()));
+    connect(broadcastThread, SIGNAL(finished()), broadcast, SLOT(deleteLater()));
+    broadcastThread->start();
+
     TaskMenu = new QMenu();
     signalMapper = new QSignalMapper();
 
@@ -73,6 +85,8 @@ Lemon::Lemon(QWidget *parent) :
             this, SLOT(showOptionsDialog()));
     connect(ui->refreshButton, SIGNAL(clicked()),
             this, SLOT(refreshButtonClicked()));
+    connect(ui->collectButton, SIGNAL(clicked()),
+            this, SLOT(collectButtonClicked()));
     connect(ui->judgeButton, SIGNAL(clicked()),
             ui->resultViewer, SLOT(judgeSelected()));
     connect(ui->judgeAllButton, SIGNAL(clicked()),
@@ -268,6 +282,7 @@ void Lemon::showOptionsDialog()
             for (int i = 0; i < taskList.size(); i ++)
                 taskList[i]->refreshCompilerConfiguration(settings);
         }
+        broadcast->setInterfaceId(settings->getNetworkInterfaceIndex());
     }
     delete dialog;
 }
@@ -286,6 +301,30 @@ void Lemon::refreshButtonClicked()
         ui->judgeAllAction->setEnabled(false);
         ui->judgeSingleTaskButton->setEnabled(false);
         ui->judgeSingleTaskAction->setEnabled(false);
+    }
+}
+
+void Lemon::collectButtonClicked()
+{
+    if(!curContest || curContest->server->onlineCount() == 0)
+        return;
+    CollectDialog *dialog = new CollectDialog(this);
+    dialog->setContest(curContest);
+    connect(curContest->server, SIGNAL(showStartCollecting(QString)), dialog, SLOT(showStartCollecting(QString)));
+    connect(curContest->server, SIGNAL(showFinishCollecting(QString)), dialog, SLOT(showFinishCollecting(QString)));
+    emit curContest->server->collectCodeSignal();
+    dialog->exec();
+    auto failure = curContest->server->failure;
+    if(failure.count() != 0) {
+        QString list;
+        for(auto it = failure.begin(); it != failure.end(); it++) {
+            if(it != failure.begin()) list += "\n";
+            list += *it;
+        }
+        QMessageBox::warning(this, tr("Failed to collect some code"),
+                             tr("LemonPlus cannot collect the code of these contestants:")
+                             + "\n" + list);
+        failure.clear();
     }
 }
 
@@ -478,6 +517,7 @@ void Lemon::newAction()
 
 void Lemon::closeAction()
 {
+    emit curContest->stopServerSignal();
     saveContest(curFile);
     ui->summary->setContest(0);
     ui->taskEdit->setEditTask(0);

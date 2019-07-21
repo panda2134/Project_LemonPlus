@@ -27,6 +27,8 @@
 #include <QtGui>
 #include <QWidget>
 
+#include "settingsitem.h"
+
 namespace Ui {
     class CompilerSettings;
 }
@@ -34,15 +36,15 @@ namespace Ui {
 class Settings;
 class Compiler;
 
-class CompilerSettings : public QWidget
+class CompilerSettings : public QWidget, SettingsItem
 {
     Q_OBJECT
 
 public:
     explicit CompilerSettings(QWidget *parent = 0);
     ~CompilerSettings();
-    void resetEditSettings(Settings*);
-    bool checkValid();
+    void resetEditSettings(Settings*) override;
+    bool checkValid() override;
 
 private:
     Ui::CompilerSettings *ui;

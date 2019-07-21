@@ -27,21 +27,23 @@
 #include <QtGui>
 #include <QWidget>
 
+#include "settingsitem.h"
+
 namespace Ui {
     class GeneralSettings;
 }
 
 class Settings;
 
-class GeneralSettings : public QWidget
+class GeneralSettings : public QWidget, SettingsItem
 {
     Q_OBJECT
 
 public:
     explicit GeneralSettings(QWidget *parent = 0);
     ~GeneralSettings();
-    void resetEditSettings(Settings*);
-    bool checkValid();
+    void resetEditSettings(Settings*) override;
+    bool checkValid() override;
 
 private:
     Ui::GeneralSettings *ui;

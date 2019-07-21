@@ -51,6 +51,7 @@ void OptionsDialog::resetEditSettings(Settings *settings)
     editSettings->copyFrom(settings);
     ui->generalSettings->resetEditSettings(editSettings);
     ui->compilerSettings->resetEditSettings(editSettings);
+    ui->networkSettings->resetEditSettings(editSettings);
     ui->tabWidget->setCurrentIndex(0);
 }
 
@@ -60,5 +61,7 @@ void OptionsDialog::okayButtonClicked()
     if (! ui->generalSettings->checkValid()) return;
     ui->tabWidget->setCurrentIndex(1);
     if (! ui->compilerSettings->checkValid()) return;
+    ui->tabWidget->setCurrentIndex(2);
+    if (! ui->networkSettings->checkValid()) return;
     accept();
 }

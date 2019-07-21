@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/judge">
+        <file>realjudge_linux</file>
+    </qresource>
+    <qresource prefix="/watcher">
+        <file>watcher_unix</file>
+    </qresource>
+</RCC>

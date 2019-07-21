@@ -23,6 +23,10 @@ QMAKE_CXXFLAGS += -std=c++11
 TARGET = lemon
 TEMPLATE = app
 
+INCLUDEPATH += $$PWD/include
+
+LIBS += -L$$PWD/lib -lquazip -lz
+
 SOURCES += main.cpp \
     lemon.cpp \
     contest.cpp \
@@ -58,7 +62,15 @@ SOURCES += main.cpp \
     environmentvariablesdialog.cpp \
     editvariabledialog.cpp \
     addcompilerwizard.cpp \
-    exportutil.cpp
+    exportutil.cpp \
+    lanbroadcast.cpp \
+    networksettings.cpp \
+    contestserver.cpp \
+    collectdialog.cpp \
+    contestserverworker.cpp
+
+win32:SOURCES -= watcher_unix.c
+unix:SOURCES += watcher_unix.c
 
 win32:SOURCES += qtlockedfile/qtlockedfile_win.cpp
 unix:SOURCES += qtlockedfile/qtlockedfile_unix.cpp
@@ -98,7 +110,13 @@ HEADERS  += lemon.h \
     environmentvariablesdialog.h \
     editvariabledialog.h \
     addcompilerwizard.h \
-    exportutil.h
+    exportutil.h \
+    lanbroadcast.h \
+    networksettings.h \
+    settingsitem.h \
+    contestserver.h \
+    collectdialog.h \
+    contestserverworker.h
 
 win32:FORMS += forms_win32/lemon.ui \
     forms_win32/taskeditwidget.ui \
@@ -118,7 +136,9 @@ win32:FORMS += forms_win32/lemon.ui \
     forms_win32/advancedcompilersettingsdialog.ui \
     forms_win32/environmentvariablesdialog.ui \
     forms_win32/editvariabledialog.ui \
-    forms_win32/addcompilerwizard.ui
+    forms_win32/addcompilerwizard.ui \
+    forms_win32/networksettings.ui \
+    forms_win32/collectdialog.ui
 
 unix:FORMS += forms_unix/lemon.ui \
     forms_unix/taskeditwidget.ui \
@@ -138,7 +158,9 @@ unix:FORMS += forms_unix/lemon.ui \
     forms_unix/advancedcompilersettingsdialog.ui \
     forms_unix/environmentvariablesdialog.ui \
     forms_unix/editvariabledialog.ui \
-    forms_unix/addcompilerwizard.ui
+    forms_unix/addcompilerwizard.ui \
+    forms_unix/networksettings.ui \
+    forms_unix/collectdialog.ui
 
 TRANSLATIONS += lemon_zh_CN.ts
 

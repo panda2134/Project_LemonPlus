@@ -29,10 +29,19 @@
 #include "contestant.h"
 #include "judgingthread.h"
 #include "assignmentthread.h"
+#include "contestserver.h"
 
 Contest::Contest(QObject *parent) :
     QObject(parent)
 {
+    server = new ContestServer(nullptr, this);
+    serverThread = new QThread();
+    server->moveToThread(serverThread);
+    connect(this, SIGNAL(stopServerSignal()), server, SLOT(stopServer()));
+    connect(serverThread, SIGNAL(started()), server, SLOT(startServer()));
+    connect(serverThread, SIGNAL(finished()), server, SLOT(deleteLater()));
+    connect(serverThread, SIGNAL(finished()), serverThread, SLOT(deleteLater()));
+    serverThread->start();
 }
 
 void Contest::setSettings(Settings *_settings)
@@ -138,7 +147,8 @@ void Contest::refreshContestantList()
 
 void Contest::deleteContestant(const QString &name)
 {
-    if (! contestantList.contains(name)) return;
+    if (!contestantList.contains(name) || this->server->isContestantOnline(name))
+        return; // an online contestant shouldn't be removed.
     delete contestantList[name];
     contestantList.remove(name);
 }

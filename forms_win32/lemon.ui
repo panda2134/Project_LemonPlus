@@ -190,6 +190,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="collectButton">
+            <property name="text">
+             <string>Collect</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="judgeSingleTaskButton">
             <property name="text">
              <string>Judge Single Task</string>

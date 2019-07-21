@@ -41,6 +41,8 @@ public:
     int getSpecialJudgeTimeLimit() const;
     int getFileSizeLimit() const;
     int getRejudgeTimes() const;
+    int getNetworkInterfaceIndex() const;
+    int getLookupInterval() const;
     const QString& getDefaultInputFileExtension() const;
     const QString& getDefaultOutputFileExtension() const;
     const QStringList& getInputFileExtensions() const;
@@ -57,6 +59,8 @@ public:
     void setSpecialJudgeTimeLimit(int);
     void setFileSizeLimit(int);
     void setRejudgeTimes(int);
+    void setNetworkInterfaceIndex(int);
+    void setLookupInterval(int value);
     void setDefaultInputFileExtension(const QString&);
     void setDefaultOutputFileExtension(const QString&);
     void setInputFileExtensions(const QString&);
@@ -82,6 +86,7 @@ public:
     static QString temporaryPath();
     static QString selfTestPath();
 
+
 private:
     QList<Compiler*> compilerList;
     int defaultFullScore;
@@ -91,6 +96,8 @@ private:
     int specialJudgeTimeLimit;
     int fileSizeLimit;
     int rejudgeTimes;
+    int networkInterfaceIndex;
+    int lookupInterval;
     QString defaultInputFileExtension;
     QString defaultOutputFileExtension;
     QStringList inputFileExtensions;

@@ -1,0 +1,17 @@
+#include "serverbroadcast.h"
+
+ServerBroadcast::ServerBroadcast(QObject *parent) : QObject(parent)
+{
+}
+
+ServerBroadcast::startBroadcastTimer() 
+{
+    timer = new QTimer();
+    timer->setInterval(3000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(doBroadcast()))
+}
+
+ServerBroadcast::doBroadcast() 
+{
+    
+}

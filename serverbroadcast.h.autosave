@@ -1,0 +1,22 @@
+#ifndef SERVERBROADCAST_H
+#define SERVERBROADCAST_H
+
+#include <QObject>
+
+class ServerBroadcast : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ServerBroadcast(QObject *parent = nullptr);
+    void startBroadcastTimer();
+
+signals:
+
+public slots:
+    void doBroadcast();
+    
+private:
+    QTimer *timer;
+};
+
+#endif // SERVERBROADCAST_H

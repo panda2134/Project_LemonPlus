@@ -34,6 +34,7 @@ namespace Ui {
 class Contest;
 class Settings;
 class OptionsDialog;
+class LanBroadcast;
 
 class Lemon : public QMainWindow
 {
@@ -48,8 +49,9 @@ public:
 
 private:
     Ui::Lemon *ui;
-    Contest *curContest;
+    Contest *curContest = nullptr;
     Settings *settings;
+    LanBroadcast *broadcast;
     QFileSystemWatcher *dataDirWatcher;
     QString curFile;
     QList<QAction*> languageActions;
@@ -58,6 +60,7 @@ private:
     QSignalMapper *signalMapper;
     QMenu *TaskMenu;
     QList<QAction *> TaskList;
+    QThread *broadcastThread;
     void loadUiLanguage();
     void insertWatchPath(const QString&, QFileSystemWatcher*);
     void newContest(const QString&, const QString&, const QString&);
@@ -72,6 +75,7 @@ private slots:
     void resetDataWatcher();
     void showOptionsDialog();
     void refreshButtonClicked();
+    void collectButtonClicked();
     void tabIndexChanged(int);
     void viewerSelectionChanged();
     void contestantDeleted();
