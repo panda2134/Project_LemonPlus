@@ -1,3 +1,7 @@
+此fork加入了类似cena的代码收取功能，客户端见![LemonPlusClient](https://github.com/panda2134/LemonPlusClient)
+
+------------------
+
 # Project LemonPlus(预览版)
 A tiny judging environment for OI contest based on Project_Lemon.
 
